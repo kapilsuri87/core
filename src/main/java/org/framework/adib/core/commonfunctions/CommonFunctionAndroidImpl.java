@@ -1,28 +1,29 @@
 package org.framework.adib.core.commonfunctions;
 
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidElement;
-import io.appium.java_client.android.AndroidKeyCode;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.codehaus.plexus.util.FileUtils;
+import org.framework.adib.core.utilities.Log;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.OutputType;
+
+import io.appium.java_client.android.Activity;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
+import io.appium.java_client.android.AndroidKeyCode;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
-import org.codehaus.plexus.util.FileUtils;
-import org.framework.adib.core.baseclass.BaseClass;
-import org.framework.adib.core.utilities.Log;
-import org.openqa.selenium.OutputType;
 
 // TODO: Auto-generated Javadoc
 /**
  * @author kapilsuri
  *
  */
-public class CommonFunctionAndroidImpl extends BaseClass implements CommonFunction {
+public class CommonFunctionAndroidImpl implements CommonFunction {
     
     /** The driver. */
     AndroidDriver<AndroidElement> driver;
@@ -54,7 +55,10 @@ public class CommonFunctionAndroidImpl extends BaseClass implements CommonFuncti
      *
      */
     public void hideKeyBoard() {
-        driver.hideKeyboard();
+        if (driver.isKeyboardShown()) {
+            driver.hideKeyboard();
+        }
+        
     }
     
     /**
@@ -141,6 +145,24 @@ public class CommonFunctionAndroidImpl extends BaseClass implements CommonFuncti
         driver.pressKeyCode(187);
         driver.findElementById(locator).click();
         driverWait(2000);
+    }
+    
+    /**
+     * Method to Switch applications.
+     *
+     * @param: settingsAppPackageName
+     *             String settingsAppPackageName is the App package name
+     * @param: settingsAppActivityName
+     *             String settingsAppActivityName is the App activity name
+     */
+    public void switchApplication(String settingsAppPackageName, String settingsAppActivityName) {
+        Activity activity = new Activity(settingsAppPackageName, settingsAppActivityName);
+        driver.startActivity(activity);
+    }
+    
+    public void dismissAlert() {
+        Alert simplealert = driver.switchTo().alert();
+        simplealert.dismiss();
     }
     
 }

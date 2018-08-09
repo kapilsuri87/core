@@ -1,15 +1,5 @@
 package org.framework.adib.core.baseclass;
 
-import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidElement;
-import io.appium.java_client.remote.AndroidMobileCapabilityType;
-import io.appium.java_client.remote.MobileCapabilityType;
-import io.appium.java_client.remote.MobilePlatform;
-import io.appium.java_client.service.local.AppiumDriverLocalService;
-import io.appium.java_client.service.local.AppiumServiceBuilder;
-import io.appium.java_client.service.local.flags.GeneralServerFlag;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -20,12 +10,20 @@ import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
+import io.appium.java_client.remote.AndroidMobileCapabilityType;
+import io.appium.java_client.remote.MobileCapabilityType;
+import io.appium.java_client.remote.MobilePlatform;
+import io.appium.java_client.service.local.AppiumDriverLocalService;
+import io.appium.java_client.service.local.AppiumServiceBuilder;
+import io.appium.java_client.service.local.flags.GeneralServerFlag;
+
 public class BaseClass {
     
     @SuppressWarnings("rawtypes")
     private static AppiumDriver driver;
-    
-    // public WebDriverWait wait;
     
     /**
      * Gets the driver.
@@ -54,16 +52,15 @@ public class BaseClass {
      * @param: CONFIG
      *             Config properties of the application under test
      */
-    public static void openApplication(String appUrl, Properties CONFIG) throws MalformedURLException {
+    public static void openApplication(String appUrl, Properties CONFIG, String EMU_NAME, String PLATFORM_VERSION, String APPIUM_PORT) throws MalformedURLException {
         File appDir = new File(appUrl);
         
         File app = new File(appDir, CONFIG.getProperty("APP_NAME"));
         
-        boolean isRunning = checkIfServerIsRunnning(Integer.parseInt(CONFIG.getProperty("APPIUM_PORT")));
+        boolean isRunning = checkIfServerIsRunnning(Integer.parseInt(APPIUM_PORT));
         
-        if (!isRunning)
-        {
-            startServer(CONFIG);
+        if (!isRunning) {
+            startServer(CONFIG, APPIUM_PORT);
         }
         if (CONFIG.getProperty("OS").equalsIgnoreCase("ANDROID")) {
             // Defining APIUM Capabilities
@@ -72,17 +69,17 @@ public class BaseClass {
             cap.setCapability(MobileCapabilityType.PLATFORM_NAME, MobilePlatform.ANDROID);
             cap.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
             cap.setCapability(MobileCapabilityType.PLATFORM_NAME, MobilePlatform.ANDROID);
-            cap.setCapability(MobileCapabilityType.DEVICE_NAME, CONFIG.getProperty("DEVICE_NAME"));
+            cap.setCapability(MobileCapabilityType.DEVICE_NAME, EMU_NAME);
             cap.setCapability(MobileCapabilityType.BROWSER_NAME, CONFIG.getProperty("BROWSER_NAME"));
-            cap.setCapability(MobileCapabilityType.PLATFORM_VERSION, CONFIG.getProperty("PLATFORM_VERSION"));
+            cap.setCapability(MobileCapabilityType.PLATFORM_VERSION,PLATFORM_VERSION);
             cap.setCapability(AndroidMobileCapabilityType.APP_PACKAGE, CONFIG.getProperty("APP_PACKAGE"));
             cap.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, CONFIG.getProperty("APP_ACTIVITY"));
             
             // To run with emulator
-            cap.setCapability("avd", CONFIG.getProperty("EMU_NAME"));
+            cap.setCapability("avd", EMU_NAME);
             
             // Initializing Android Driver
-            String APPIUM_URL = "http://" + CONFIG.getProperty("APPIUM_IP") + ":" + CONFIG.getProperty("APPIUM_PORT")
+            String APPIUM_URL = "http://" + CONFIG.getProperty("APPIUM_IP") + ":" + APPIUM_PORT
                     + "/wd/hub";
             driver = new AndroidDriver<AndroidElement>(new URL(APPIUM_URL), cap);
             
@@ -98,7 +95,7 @@ public class BaseClass {
      * @param: CONFIG
      *             the config properties for application under test
      */
-    public static void startServer(Properties CONFIG) {
+    public static void startServer(Properties CONFIG, String APPIUM_PORT) {
         // Set Capabilities
         cap = new DesiredCapabilities();
         cap.setCapability("noReset", "false");
@@ -106,7 +103,7 @@ public class BaseClass {
         // Build the Appium service
         builder = new AppiumServiceBuilder();
         builder.withIPAddress(CONFIG.getProperty("APPIUM_IP"));
-        builder.usingPort(Integer.parseInt(CONFIG.getProperty("APPIUM_PORT")));
+        builder.usingPort(Integer.parseInt(APPIUM_PORT));
         builder.withCapabilities(cap);
         builder.withArgument(GeneralServerFlag.SESSION_OVERRIDE);
         builder.withArgument(GeneralServerFlag.LOG_LEVEL, "error");

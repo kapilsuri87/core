@@ -14,4 +14,8 @@ public interface CommonFunction {
     
     void selectMinimizedApplication(String locator);
     
+    void switchApplication(String settingsAppPackageName, String settingsAppActivityName);
+    
+    void dismissAlert();
+    
 }
