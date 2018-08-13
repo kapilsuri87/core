@@ -10,7 +10,7 @@ public interface CommonFunction {
     
     void minimizeApplication();
     
-    void driverWait(long t);
+    void driverWait(long durarion);
     
     void selectMinimizedApplication(String locator);
     

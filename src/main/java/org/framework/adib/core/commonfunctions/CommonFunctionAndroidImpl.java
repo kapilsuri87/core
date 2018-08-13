@@ -1,22 +1,24 @@
 package org.framework.adib.core.commonfunctions;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import org.codehaus.plexus.util.FileUtils;
-import org.framework.adib.core.utilities.Log;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.OutputType;
 
 import io.appium.java_client.android.Activity;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.android.AndroidKeyCode;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
+
+import org.codehaus.plexus.util.FileUtils;
+import org.framework.adib.core.utilities.Log;
+import org.openqa.selenium.OutputType;
+
 
 // TODO: Auto-generated Javadoc
 /**
@@ -67,9 +69,9 @@ public class CommonFunctionAndroidImpl implements CommonFunction {
      * @param t
      *            wait time in long
      */
-    public void driverWait(long t) {
+    public void driverWait(long duration) {
         try {
-            Thread.sleep(t);
+            Thread.sleep(duration);
         } catch (InterruptedException e) {
             Log.info("Thread.wait failed to execute");
         }
@@ -161,8 +163,9 @@ public class CommonFunctionAndroidImpl implements CommonFunction {
     }
     
     public void dismissAlert() {
-        Alert simplealert = driver.switchTo().alert();
-        simplealert.dismiss();
+//        Alert simplealert = driver.switchTo().alert();
+//        simplealert.dismiss();
+        driver.pressKeyCode(AndroidKeyCode.ENTER);
     }
     
 }
