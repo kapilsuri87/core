@@ -27,16 +27,16 @@ public class XlsReader {
     private XSSFWorkbook workbook = null;
     private XSSFSheet sheet = null;
     private XSSFRow row = null;
-    
+
     /** The cell. */
     private XSSFCell cell = null;
-    
+
     /**
      * Method to read a Toast message.
      *
      */
     public XlsReader(String path) {
-        
+
         this.path = path;
         try {
             fis = new FileInputStream(path);
@@ -56,7 +56,7 @@ public class XlsReader {
             Log.error(e.toString());
         }
     }
-    
+
     /**
      * Method to get Row count.
      *
@@ -73,9 +73,9 @@ public class XlsReader {
             int number = sheet.getLastRowNum() + 1;
             return number;
         }
-        
+
     }
-    
+
     /**
      * Method to get Celldata.
      *
@@ -93,13 +93,13 @@ public class XlsReader {
             if (rowNum <= 0) {
                 return "";
             }
-            
+
             int index = workbook.getSheetIndex(sheetName);
             int colNum = -1;
             if (index == -1) {
                 return "";
             }
-            
+
             sheet = workbook.getSheetAt(index);
             row = sheet.getRow(0);
             for (int i = 0; i < row.getLastCellNum(); i++) {
@@ -110,39 +110,39 @@ public class XlsReader {
             if (colNum == -1) {
                 return "";
             }
-            
+
             sheet = workbook.getSheetAt(index);
             row = sheet.getRow(rowNum - 1);
             if (row == null) {
                 return "";
             }
             cell = row.getCell(colNum);
-            
+
             if (cell == null) {
                 return "";
             }
             if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
                 return cell.getStringCellValue();
             } else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC || cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
-                
+
                 String cellText = String.valueOf(cell.getNumericCellValue());
                 if (HSSFDateUtil.isCellDateFormatted(cell)) {
                     // format in form of M/D/YY
                     double dt = cell.getNumericCellValue();
-                    
+
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(HSSFDateUtil.getJavaDate(dt));
                     cellText = String.valueOf(cal.get(Calendar.YEAR)).substring(2);
                     cellText = cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH) + 1 + "/" + cellText;
                 }
-                
+
                 return cellText;
             } else if (cell.getCellType() == Cell.CELL_TYPE_BLANK) {
                 return "";
             } else {
                 return String.valueOf(cell.getBooleanCellValue());
             }
-            
+
         } catch (Exception e) {
             Log.error(e.getMessage());
             Log.error(e.toString());
@@ -151,7 +151,7 @@ public class XlsReader {
             }
         }
     }
-    
+
     /**
      * Method to get Celldata.
      *
@@ -169,13 +169,13 @@ public class XlsReader {
             if (rowNum <= 0) {
                 return "";
             }
-            
+
             int index = workbook.getSheetIndex(sheetName);
-            
+
             if (index == -1) {
                 return "";
             }
-            
+
             sheet = workbook.getSheetAt(index);
             row = sheet.getRow(rowNum - 1);
             if (row == null) {
@@ -185,22 +185,22 @@ public class XlsReader {
             if (cell == null) {
                 return "";
             }
-            
+
             if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
                 return cell.getStringCellValue();
             } else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC || cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
-                
+
                 String cellText = String.valueOf(cell.getNumericCellValue());
                 if (HSSFDateUtil.isCellDateFormatted(cell)) {
                     // format in form of M/D/YY
                     double dt = cell.getNumericCellValue();
-                    
+
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(HSSFDateUtil.getJavaDate(dt));
                     cellText = String.valueOf(cal.get(Calendar.YEAR)).substring(2);
                     cellText = cal.get(Calendar.MONTH) + 1 + "/" + cal.get(Calendar.DAY_OF_MONTH) + "/" + cellText;
                 }
-                
+
                 return cellText;
             } else if (cell.getCellType() == Cell.CELL_TYPE_BLANK) {
                 return "";
@@ -213,7 +213,7 @@ public class XlsReader {
             return "row " + rowNum + " or column " + colNum + " does not exist  in xls";
         }
     }
-    
+
     /**
      * Method to set Celldata.
      *
@@ -231,19 +231,19 @@ public class XlsReader {
         try {
             fis = new FileInputStream(path);
             workbook = new XSSFWorkbook(fis);
-            
+
             if (rowNum <= 0) {
                 return false;
             }
-            
+
             int index = workbook.getSheetIndex(sheetName);
             int colNum = -1;
             if (index == -1) {
                 return false;
             }
-            
+
             sheet = workbook.getSheetAt(index);
-            
+
             row = sheet.getRow(0);
             for (int i = 0; i < row.getLastCellNum(); i++) {
                 if (row.getCell(i).getStringCellValue().trim().equals(colName)) {
@@ -253,26 +253,26 @@ public class XlsReader {
             if (colNum == -1) {
                 return false;
             }
-            
+
             sheet.autoSizeColumn(colNum);
             row = sheet.getRow(rowNum - 1);
             if (row == null) {
                 row = sheet.createRow(rowNum - 1);
             }
-            
+
             cell = row.getCell(colNum);
             if (cell == null) {
                 cell = row.createCell(colNum);
             }
-            
+
             cell.setCellValue(data);
-            
+
             fileOut = new FileOutputStream(path);
-            
+
             workbook.write(fileOut);
-            
+
             fileOut.close();
-            
+
         } catch (Exception e) {
             Log.error(e.getMessage());
             Log.error(e.toString());
@@ -280,7 +280,7 @@ public class XlsReader {
         }
         return true;
     }
-    
+
     /**
      * Method to set Celldata.
      *
@@ -300,17 +300,17 @@ public class XlsReader {
         try {
             fis = new FileInputStream(path);
             workbook = new XSSFWorkbook(fis);
-            
+
             if (rowNum <= 0) {
                 return false;
             }
-            
+
             int index = workbook.getSheetIndex(sheetName);
             int colNum = -1;
             if (index == -1) {
                 return false;
             }
-            
+
             sheet = workbook.getSheetAt(index);
             row = sheet.getRow(0);
             for (int i = 0; i < row.getLastCellNum(); i++) {
@@ -318,7 +318,7 @@ public class XlsReader {
                     colNum = i;
                 }
             }
-            
+
             if (colNum == -1) {
                 return false;
             }
@@ -327,14 +327,14 @@ public class XlsReader {
             if (row == null) {
                 row = sheet.createRow(rowNum - 1);
             }
-            
+
             cell = row.getCell(colNum);
             if (cell == null) {
                 cell = row.createCell(colNum);
             }
-            
+
             cell.setCellValue(data);
-            
+
             // cell style for hyperlinks
             // by default hypelrinks are blue and underlined
             CellStyle hlinkstyle = workbook.createCellStyle();
@@ -342,25 +342,25 @@ public class XlsReader {
             hlinkfont.setUnderline(XSSFFont.U_SINGLE);
             hlinkfont.setColor(IndexedColors.BLUE.getIndex());
             hlinkstyle.setFont(hlinkfont);
-            
+
             XSSFCreationHelper createHelper = workbook.getCreationHelper();
             XSSFHyperlink link = createHelper.createHyperlink(XSSFHyperlink.LINK_FILE);
             link.setAddress(url);
             cell.setHyperlink(link);
             cell.setCellStyle(hlinkstyle);
-            
+
             fileOut = new FileOutputStream(path);
             workbook.write(fileOut);
-            
+
             fileOut.close();
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
         return true;
     }
-    
+
     /**
      * Method to add Sheet.
      *
@@ -369,7 +369,7 @@ public class XlsReader {
      *
      */
     public boolean addSheet(String sheetname) {
-        
+
         FileOutputStream fileOut = null;
         try {
             workbook.createSheet(sheetname);
@@ -388,9 +388,9 @@ public class XlsReader {
             }
         }
         return true;
-        
+
     }
-    
+
     /**
      * Method to add Sheet.
      *
@@ -406,7 +406,7 @@ public class XlsReader {
         if (index == -1) {
             return false;
         }
-        
+
         FileOutputStream fileOut;
         fileOut = null;
         try {
@@ -427,7 +427,7 @@ public class XlsReader {
         }
         return true;
     }
-    
+
     /**
      * Method to add Column.
      *
@@ -442,7 +442,7 @@ public class XlsReader {
      */
     public boolean addColumn(String sheetName, String colName) {
         // System.out.println("**************addColumn*********************");
-        
+
         try {
             fis = new FileInputStream(path);
             workbook = new XSSFWorkbook(fis);
@@ -450,41 +450,41 @@ public class XlsReader {
             if (index == -1) {
                 return false;
             }
-            
+
             XSSFCellStyle style = workbook.createCellStyle();
             style.setFillForegroundColor(HSSFColor.GREY_40_PERCENT.index);
             style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-            
+
             sheet = workbook.getSheetAt(index);
-            
+
             row = sheet.getRow(0);
             if (row == null) {
                 row = sheet.createRow(0);
             }
-            
+
             if (row.getLastCellNum() == -1) {
                 cell = row.createCell(0);
             } else {
                 cell = row.createCell(row.getLastCellNum());
             }
-            
+
             cell.setCellValue(colName);
             cell.setCellStyle(style);
-            
+
             fileOut = new FileOutputStream(path);
             workbook.write(fileOut);
             fileOut.close();
-            
+
         } catch (Exception e) {
             Log.error(e.getMessage());
             Log.error(e.toString());
             return false;
         }
-        
+
         return true;
-        
+
     }
-    
+
     /**
      * Method to remove Column.
      *
@@ -508,7 +508,7 @@ public class XlsReader {
             XSSFCellStyle style = workbook.createCellStyle();
             style.setFillForegroundColor(HSSFColor.GREY_40_PERCENT.index);
             style.setFillPattern(HSSFCellStyle.NO_FILL);
-            
+
             for (int i = 0; i < getRowCount(sheetName); i++) {
                 row = sheet.getRow(i);
                 if (row != null) {
@@ -527,9 +527,9 @@ public class XlsReader {
             return false;
         }
         return true;
-        
+
     }
-    
+
     /**
      * Method to check if Sheet present.
      *
@@ -553,7 +553,7 @@ public class XlsReader {
             return true;
         }
     }
-    
+
     /**
      * Method to get Column count.
      *
@@ -569,18 +569,18 @@ public class XlsReader {
         if (!isSheetExist(sheetName)) {
             return -1;
         }
-        
+
         sheet = workbook.getSheet(sheetName);
         row = sheet.getRow(0);
-        
+
         if (row == null) {
             return -1;
         }
-        
+
         return row.getLastCellNum();
-        
+
     }
-    
+
     /**
      * Method to get Cell Rownumber.
      *
@@ -596,14 +596,14 @@ public class XlsReader {
      *
      */
     public int getCellRowNum(String sheetName, String colName, String cellValue) {
-        
+
         for (int i = 2; i <= getRowCount(sheetName); i++) {
             if (getCellData(sheetName, colName, i).equalsIgnoreCase(cellValue)) {
                 return i;
             }
         }
         return -1;
-        
+
     }
-    
+
 }

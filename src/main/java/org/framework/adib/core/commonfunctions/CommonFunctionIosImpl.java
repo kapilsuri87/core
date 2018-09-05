@@ -1,13 +1,14 @@
 package org.framework.adib.core.commonfunctions;
 
+import java.time.Duration;
+
+import io.appium.java_client.MobileElement;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 
-import java.time.Duration;
-
 import org.framework.adib.core.utilities.Log;
 
-public class CommonFunctionIOSImpl implements CommonFunction {
+public class CommonFunctionIosImpl implements CommonFunction {
 
     /** The driver. */
     IOSDriver<IOSElement> driver;
@@ -18,7 +19,7 @@ public class CommonFunctionIOSImpl implements CommonFunction {
      * @param driver
      *            the driver
      */
-    public CommonFunctionIOSImpl(IOSDriver<IOSElement> driver) {
+    public CommonFunctionIosImpl(IOSDriver<IOSElement> driver) {
         this.driver = driver;
     }
 
@@ -42,7 +43,7 @@ public class CommonFunctionIOSImpl implements CommonFunction {
     /**
      * Method to wait the tread.
      *
-     * @param t
+     * @param duration
      *            wait time in long
      */
     public void driverWait(long duration) {
@@ -53,6 +54,28 @@ public class CommonFunctionIOSImpl implements CommonFunction {
         }
     }
     
+    /**
+     * This method is used to enable a switch
+     * 
+     * @param element
+     *            MobileElement of the switch
+     * @param status
+     *            The expected value which must be set
+     */
+    public void enableSwitch(MobileElement element, Boolean status) {
+        if (status) {
+            if (element.getAttribute("value").equalsIgnoreCase("0")) {
+                Log.info("Standard switch is disabled");
+                element.click();
+            }
+        } else {
+            if (element.getAttribute("value").equalsIgnoreCase("1")) {
+                Log.info("Standard switch is enabled");
+                element.click();
+            }
+        }
+    }
+
     @Override
     public void minimizeApplication() {
         driver.runAppInBackground(Duration.ofSeconds(-1));
@@ -68,7 +91,7 @@ public class CommonFunctionIOSImpl implements CommonFunction {
 
     @Override
     public void switchApplication(String settingsAppPackageName, String settingsAppActivityName) {
-       driver.launchApp();
+        driver.launchApp();
 
     }
 
